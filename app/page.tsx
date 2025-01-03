@@ -1,6 +1,6 @@
-import { Hero } from "@/components/sections/Hero"
-import { Platforms } from "@/components/sections/Platforms"
-import { Features } from "@/components/sections/Features"
+import { Hero } from "@/components/layout/Hero"
+import { Platforms } from "@/components/layout/Platforms"
+import { Features } from "@/components/layout/Features"
 
 export default function VideoDownloader() {
   return (

@@ -15,11 +15,44 @@ interface DownloadModalProps {
 export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps) {
   const [format, setFormat] = useState('mp4')
   const [quality, setQuality] = useState('720p')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleDownload = () => {
-    // Here you would implement the actual download logic
-    console.log(`Downloading ${videoUrl} in ${format} format at ${quality} quality`)
-    onClose()
+  const handleDownload = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/download', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: videoUrl,
+          format,
+          quality: quality.replace('p', ''), // Convert "720p" to "720"
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Create a temporary anchor to trigger the download
+      const a = document.createElement('a');
+      a.href = data.downloadUrl;
+      a.download = `video.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Handle error (you might want to show an error message to the user)
+    } finally {
+      setIsLoading(false)
+      onClose()
+    }
   }
 
   return (
@@ -58,8 +91,8 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={handleDownload} className="bg-orange-500 hover:bg-orange-600">
-            Download
+          <Button onClick={handleDownload} className="bg-orange-500 hover:bg-orange-600" disabled={isLoading}>
+            {isLoading ? 'Downloading...' : 'Download'}
           </Button>
         </DialogFooter>
       </DialogContent>
