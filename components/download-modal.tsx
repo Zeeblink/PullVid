@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -16,6 +16,21 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
   const [format, setFormat] = useState('mp4')
   const [quality, setQuality] = useState('720p')
   const [isLoading, setIsLoading] = useState(false)
+  const [videoInfo, setVideoInfo] = useState<{ title: string, thumbnail: string } | null>(null)
+
+  // Fetch video info when modal opens
+  useEffect(() => {
+    if (isOpen && videoUrl) {
+      fetch('/api/video-info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: videoUrl }),
+      })
+        .then(res => res.json())
+        .then(data => setVideoInfo(data))
+        .catch(console.error);
+    }
+  }, [isOpen, videoUrl]);
 
   const handleDownload = async () => {
     try {
@@ -28,23 +43,31 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
         body: JSON.stringify({
           url: videoUrl,
           format,
-          quality: quality.replace('p', ''), // Convert "720p" to "720"
+          quality: quality.replace('p', ''),
         }),
       });
 
-      const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error);
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Download failed');
       }
 
+      // Get the blob from the response
+      const blob = await response.blob();
+      
+      // Create a URL for the blob
+      const downloadUrl = window.URL.createObjectURL(blob);
+      
       // Create a temporary anchor to trigger the download
       const a = document.createElement('a');
-      a.href = data.downloadUrl;
-      a.download = `video.${format}`;
+      a.href = downloadUrl;
+      a.download = `${videoInfo?.title}.${format}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(downloadUrl);
 
     } catch (error) {
       console.error('Download failed:', error);
@@ -61,6 +84,18 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
         <DialogHeader>
           <DialogTitle>Download Options</DialogTitle>
         </DialogHeader>
+        
+        {videoInfo && (
+          <div className="flex flex-col items-center gap-4">
+            <img 
+              src={videoInfo.thumbnail} 
+              alt={videoInfo.title}
+              className="w-full rounded-lg object-cover"
+            />
+            <h3 className="text-sm font-medium text-center">{videoInfo.title}</h3>
+          </div>
+        )}
+
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="format">Format</Label>

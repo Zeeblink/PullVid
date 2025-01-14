@@ -8,9 +8,9 @@ import { Menu } from 'lucide-react'
 export function Header() {
   const navigation = [
     ['Home', '/'],
-    ['How It Works', '/how-it-works'],
-    ['Supported Sites', '/supported-sites'],
-    ['FAQ', '/faq'],
+    ['How It Works', '#how-it-works'],
+    ['Supported Sites', '#platforms'],
+    ['FAQ', '#faq'],
   ]
 
   return (
@@ -47,7 +47,7 @@ export function Header() {
             ))}
           </nav>
 
-          {/* <Sheet>
+          <Sheet>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -71,7 +71,7 @@ export function Header() {
                 ))}
               </nav>
             </SheetContent>
-          </Sheet> */}
+          </Sheet>
         </div>
       </div>
     </header>

@@ -33,7 +33,7 @@ const platforms = [
 
 export function Platforms() {
   return (
-    <div className="mt-20 text-center">
+    <div className="mt-20 text-center" id='platforms'>
       <h2 className="text-xl font-semibold mb-2">Supported Platforms</h2>
       <p className="text-slate-400 mb-8">Download from all major social media platforms</p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
