@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Menu } from 'lucide-react'
+import Image from 'next/image'
 
 export function Header() {
   const navigation = [
@@ -18,7 +19,13 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <svg
+          <Image
+            src={'/logo.svg'}
+            alt='logo'
+            width={40}
+            height={50}
+          />
+            {/* <svg
               width="32"
               height="32"
               viewBox="0 0 32 32"
@@ -31,7 +38,7 @@ export function Header() {
                 d="M22 16L13 21.1962L13 10.8038L22 16Z"
                 fill="white"
               />
-            </svg>
+            </svg> */}
             <span className="text-white text-xl font-semibold">PullVid</span>
           </Link>
           

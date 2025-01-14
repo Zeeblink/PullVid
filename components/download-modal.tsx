@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import Image from 'next/image'
 
 interface DownloadModalProps {
   isOpen: boolean
@@ -87,7 +88,7 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
         
         {videoInfo && (
           <div className="flex flex-col items-center gap-4">
-            <img 
+            <Image 
               src={videoInfo.thumbnail} 
               alt={videoInfo.title}
               className="w-full rounded-lg object-cover"

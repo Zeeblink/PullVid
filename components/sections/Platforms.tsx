@@ -1,4 +1,4 @@
-import { Youtube, Facebook, Instagram, X } from 'lucide-react'
+import { Youtube, Facebook, Instagram } from 'lucide-react'
 
 const platforms = [
   {
