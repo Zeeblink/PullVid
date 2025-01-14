@@ -80,7 +80,7 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-slate-900 text-white">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto bg-slate-900 text-white">
         <DialogHeader>
           <DialogTitle>Download Options</DialogTitle>
         </DialogHeader>

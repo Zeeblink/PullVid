@@ -20,7 +20,7 @@ export function HowItWorks() {
   ]
 
   return (
-    <div className="mt-20 text-center">
+    <div className="mt-20 text-center" id="how-it-works">
       <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
       <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-8">
         {steps.map((step, index) => (
