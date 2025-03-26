@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import Image from 'next/image'
+// import Image from 'next/image'
 
 interface DownloadModalProps {
   isOpen: boolean
@@ -33,51 +33,27 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
     }
   }, [isOpen, videoUrl]);
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     try {
-      setIsLoading(true)
-      const response = await fetch('/api/download', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          url: videoUrl,
-          format,
-          quality: quality.replace('p', ''),
-        }),
-      });
+      setIsLoading(true);
+      
+      // Create the download URL with a temporary token or session ID if needed
+      const downloadUrl = `/api/download?${new URLSearchParams({
+        url: videoUrl,
+        format,
+        quality: quality.replace('p', ''),
+      })}`;
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Download failed');
-      }
-
-      // Get the blob from the response
-      const blob = await response.blob();
-      
-      // Create a URL for the blob
-      const downloadUrl = window.URL.createObjectURL(blob);
-      
-      // Create a temporary anchor to trigger the download
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = `${videoInfo?.title}.${format}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      
-      // Clean up the blob URL
-      window.URL.revokeObjectURL(downloadUrl);
+      // Use window.location.href for direct download
+      window.location.href = downloadUrl;
 
     } catch (error) {
       console.error('Download failed:', error);
-      // Handle error (you might want to show an error message to the user)
     } finally {
-      setIsLoading(false)
-      onClose()
+      setIsLoading(false);
+      onClose();
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -88,9 +64,11 @@ export function DownloadModal({ isOpen, onClose, videoUrl }: DownloadModalProps)
         
         {videoInfo && (
           <div className="flex flex-col items-center gap-4">
-            <Image 
+            <img 
               src={videoInfo.thumbnail} 
               alt={videoInfo.title}
+              width={400}
+              height={225}
               className="w-full rounded-lg object-cover"
             />
             <h3 className="text-sm font-medium text-center">{videoInfo.title}</h3>
