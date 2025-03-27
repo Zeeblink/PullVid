@@ -4,25 +4,24 @@ FROM node:18-alpine
 # Install system dependencies for yt-dlp and ffmpeg
 RUN apk add --no-cache python3 py3-pip ffmpeg
 
-# Install yt-dlp globally
-RUN pip3 install yt-dlp
+# Create a virtual environment and install yt-dlp
+RUN python3 -m venv /venv
+RUN /venv/bin/pip3 install yt-dlp
+
+# Add the virtual environment to the PATH (optional but recommended)
+ENV PATH="/venv/bin:$PATH"
 
 # Set working directory
 WORKDIR /app
 
 # Copy package files and install dependencies
-COPY package.json package-lock.json ./
-# If you're using pnpm, uncomment the following line and comment the npm install line
-
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install
-
-# RUN npm install
 
 # Copy the rest of the app
 COPY . .
 
-# Build the Next.js app
+# Build the Next.js app using the backend config
 RUN pnpm run build
 
 # Expose port 80 for HTTP traffic
